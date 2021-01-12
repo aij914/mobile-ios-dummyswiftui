@@ -17,17 +17,38 @@ struct ContentView: View {
     ]
     
     var body: some View {
-        VStack {
-            ForEach(buttons, id: \.self) { row in
+        ZStack (alignment: .bottom, content: {
+            Color.black.edgesIgnoringSafeArea(.all)
+            VStack(alignment: .center, spacing: 12, content: {
                 HStack {
-                    ForEach(row, id: \.self) { button in
-                        Text(button)
-                            .font(.system(size: 32))
-                            .frame(width: 80, height: 80, alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                    }
+                    Spacer()
+                    Text("42")
+                        .foregroundColor(.white)
+                        .font(.system(size: 64))
+                }.padding()
+                
+                ForEach(buttons, id: \.self) { row in
+                    HStack (alignment: .center, spacing: 12, content: {
+                        ForEach(row, id: \.self) { button in
+                            Text(button)
+                                .font(.system(size: 32))
+                                .frame(width: buttonWidth(), height: self.buttonWidth(), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                .foregroundColor(.white)
+                                .background(Color.yellow)
+                                .cornerRadius(buttonCornerRadius())
+                        }
+                    })
                 }
-            }
-        }
+            }).padding()
+        })
+    }
+    
+    func buttonWidth() -> CGFloat {
+        return (UIScreen.main.bounds.width - 5 * 12) / 4
+    }
+    
+    func buttonCornerRadius() -> CGFloat {
+        buttonWidth() / 2
     }
 }
 
