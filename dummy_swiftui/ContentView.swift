@@ -49,12 +49,15 @@ struct ContentView: View {
                 ForEach(calculatorButtons, id: \.self) { row in
                     HStack (alignment: .center, spacing: 12, content: {
                         ForEach(row, id: \.self) { button in
-                            Text(button.rawValue)
-                                .font(.system(size: 32))
-                                .frame(width: buttonWidth(), height: self.buttonWidth(), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
-                                .foregroundColor(.white)
-                                .background(button.backgroundColor)
-                                .cornerRadius(buttonCornerRadius())
+                            
+                            Button (action: {}, label: {
+                                Text(button.rawValue)
+                                    .font(.system(size: 32))
+                                    .frame(width: buttonWidth(), height: self.buttonWidth(), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                    .foregroundColor(.white)
+                                    .background(button.backgroundColor)
+                                    .cornerRadius(buttonCornerRadius())
+                            })
                         }
                     })
                 }
