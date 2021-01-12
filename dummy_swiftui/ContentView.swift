@@ -13,11 +13,11 @@ struct ContentView: View {
         case zero = "0", one = "1", two = "2", three = "3", four = "4", five = "5", six = "6", seven = "7", eight = "8", nine = "9"
         
         case equls = "=", plus = "+", minus = "-", multiply = "X", divide = "/"
-        case ac = "AC", plusMinus = "+/-", percent = "%"
+        case ac = "AC", plusMinus = "+/-", percent = "%", dot = "."
         
         var backgroundColor: Color {
             switch self {
-            case .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine:
+            case .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine, .dot:
                 return Color(.darkGray)
             case .ac, .plusMinus, .percent:
                 return Color(.lightGray)
@@ -29,10 +29,10 @@ struct ContentView: View {
     
     let calculatorButtons: [[CalculatorButton]] = [
         [.ac, .plusMinus, .percent, .divide],
-        [.four, .five, .six, .minus],
         [.seven, .eight, .nine, .multiply],
         [.four, .five, .six, .minus],
         [.one, .two, .three, .plus],
+        [.zero, .dot, .equls],
     ]
     
     var body: some View {
@@ -53,10 +53,10 @@ struct ContentView: View {
                             Button (action: {}, label: {
                                 Text(button.rawValue)
                                     .font(.system(size: 32))
-                                    .frame(width: buttonWidth(), height: self.buttonWidth(), alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/)
+                                    .frame(width: buttonWidth(button: button), height: self.buttonDefaultWidthHeigh(), alignment: .center)
                                     .foregroundColor(.white)
                                     .background(button.backgroundColor)
-                                    .cornerRadius(buttonCornerRadius())
+                                    .cornerRadius(buttonWidth(button: button))
                             })
                         }
                     })
@@ -65,12 +65,18 @@ struct ContentView: View {
         })
     }
     
-    func buttonWidth() -> CGFloat {
-        return (UIScreen.main.bounds.width - 5 * 12) / 4
+    func buttonWidth(button: CalculatorButton) -> CGFloat {
+        let defaultWidth = buttonDefaultWidthHeigh()
+        
+        if button == .zero {
+            return defaultWidth * 2
+        }
+        
+        return defaultWidth
     }
     
-    func buttonCornerRadius() -> CGFloat {
-        buttonWidth() / 2
+    func buttonDefaultWidthHeigh() -> CGFloat {
+        return (UIScreen.main.bounds.width - 5 * 12) / 4
     }
 }
 
