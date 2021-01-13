@@ -7,31 +7,35 @@
 
 import SwiftUI
 
+enum CalculatorButton: String {
+    case zero = "0", one = "1", two = "2", three = "3", four = "4", five = "5", six = "6", seven = "7", eight = "8", nine = "9"
+    
+    case equls = "=", plus = "+", minus = "-", multiply = "X", divide = "/"
+    case ac = "AC", plusMinus = "+/-", percent = "%", dot = "."
+    
+    var backgroundColor: Color {
+        switch self {
+        case .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine, .dot:
+            return Color(.darkGray)
+        case .ac, .plusMinus, .percent:
+            return Color(.lightGray)
+        default:
+            return .orange
+        }
+    }
+}
+
 class GlobalEnvironment: ObservableObject {
     @Published var display = "0"
+    
+    func receiveInput(calculatorButton: CalculatorButton) {
+        self.display = calculatorButton.rawValue
+    }
 }
 
 struct ContentView: View {
     @EnvironmentObject var env: GlobalEnvironment
-    
-    enum CalculatorButton: String {
-        case zero = "0", one = "1", two = "2", three = "3", four = "4", five = "5", six = "6", seven = "7", eight = "8", nine = "9"
         
-        case equls = "=", plus = "+", minus = "-", multiply = "X", divide = "/"
-        case ac = "AC", plusMinus = "+/-", percent = "%", dot = "."
-        
-        var backgroundColor: Color {
-            switch self {
-            case .zero, .one, .two, .three, .four, .five, .six, .seven, .eight, .nine, .dot:
-                return Color(.darkGray)
-            case .ac, .plusMinus, .percent:
-                return Color(.lightGray)
-            default:
-                return .orange
-            }
-        }
-    }
-    
     let calculatorButtons: [[CalculatorButton]] = [
         [.ac, .plusMinus, .percent, .divide],
         [.seven, .eight, .nine, .multiply],
@@ -54,17 +58,7 @@ struct ContentView: View {
                 ForEach(calculatorButtons, id: \.self) { row in
                     HStack (alignment: .center, spacing: 12, content: {
                         ForEach(row, id: \.self) { button in
-                            
-                            Button (action: {
-                                self.env.display = button.rawValue
-                            }, label: {
-                                Text(button.rawValue)
-                                    .font(.system(size: 32))
-                                    .frame(width: buttonWidth(button: button), height: self.buttonDefaultWidthHeigh(), alignment: .center)
-                                    .foregroundColor(.white)
-                                    .background(button.backgroundColor)
-                                    .cornerRadius(buttonWidth(button: button))
-                            })
+                            CalculatorButtonView(button: button)
                         }
                     })
                 }
@@ -72,7 +66,27 @@ struct ContentView: View {
         })
     }
     
-    func buttonWidth(button: CalculatorButton) -> CGFloat {
+    
+}
+
+struct CalculatorButtonView: View {
+    var button: CalculatorButton
+    @EnvironmentObject var env: GlobalEnvironment
+
+    var body: some View {
+        Button (action: {
+            env.receiveInput(calculatorButton: button)
+        }, label: {
+            Text(button.rawValue)
+                .font(.system(size: 32))
+                .frame(width: buttonWidth(button: button), height: self.buttonDefaultWidthHeigh(), alignment: .center)
+                .foregroundColor(.white)
+                .background(button.backgroundColor)
+                .cornerRadius(buttonWidth(button: button))
+        })
+    }
+    
+    private func buttonWidth(button: CalculatorButton) -> CGFloat {
         let defaultWidth = buttonDefaultWidthHeigh()
         
         if button == .zero {
@@ -82,7 +96,7 @@ struct ContentView: View {
         return defaultWidth
     }
     
-    func buttonDefaultWidthHeigh() -> CGFloat {
+    private func buttonDefaultWidthHeigh() -> CGFloat {
         return (UIScreen.main.bounds.width - 5 * 12) / 4
     }
 }
