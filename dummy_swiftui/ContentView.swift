@@ -7,7 +7,12 @@
 
 import SwiftUI
 
+class GlobalEnvironment: ObservableObject {
+    @Published var display = "0"
+}
+
 struct ContentView: View {
+    @EnvironmentObject var env: GlobalEnvironment
     
     enum CalculatorButton: String {
         case zero = "0", one = "1", two = "2", three = "3", four = "4", five = "5", six = "6", seven = "7", eight = "8", nine = "9"
@@ -41,7 +46,7 @@ struct ContentView: View {
             VStack(alignment: .center, spacing: 12, content: {
                 HStack {
                     Spacer()
-                    Text("42")
+                    Text(env.display)
                         .foregroundColor(.white)
                         .font(.system(size: 64))
                 }.padding()
@@ -50,7 +55,9 @@ struct ContentView: View {
                     HStack (alignment: .center, spacing: 12, content: {
                         ForEach(row, id: \.self) { button in
                             
-                            Button (action: {}, label: {
+                            Button (action: {
+                                self.env.display = button.rawValue
+                            }, label: {
                                 Text(button.rawValue)
                                     .font(.system(size: 32))
                                     .frame(width: buttonWidth(button: button), height: self.buttonDefaultWidthHeigh(), alignment: .center)
@@ -69,7 +76,7 @@ struct ContentView: View {
         let defaultWidth = buttonDefaultWidthHeigh()
         
         if button == .zero {
-            return defaultWidth * 2
+            return (defaultWidth * 2) + 12
         }
         
         return defaultWidth
@@ -83,9 +90,7 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ContentView()
-            ContentView()
-            ContentView()
+            ContentView().environmentObject(GlobalEnvironment())
         }
     }
 }
